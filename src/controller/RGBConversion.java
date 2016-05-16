@@ -20,11 +20,11 @@ public class RGBConversion {
 		this.B2 = 0;
 	}
 	/******************** CMYKtoRGB****************************************************/
-	public void cmyk2rgb(int c, int m, int y, int k) {
+	public void cmyk2rgb(double c, double m, double y, double k) {
 		
-		this.R1 = (int) (255 * ((1-c) * (1-k)));
-		this.G1 = (int) (255 * ((1-m) * (1-k)));
-		this.B1 = (int) (255 * ((1-y) * (1-k)));
+		this.R1 = (int) (255 * (1-c) * (1-k));
+		this.G1 = (int) (255 * (1-m) * (1-k));
+		this.B1 = (int) (255 * (1-y) * (1-k));
 	
 	}
 	
@@ -42,7 +42,7 @@ public class RGBConversion {
 	
 	/******************** HSVtoRGB***************************************************/
 	
-	public void hsv2rgb(int hue, int saturation, int value) { 
+	public void hsv2rgb(double hue, double saturation, double value) { 
 	
 		
 	    int i;

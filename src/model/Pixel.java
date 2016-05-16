@@ -57,6 +57,7 @@ public class Pixel {
     	setBlue(bValue);
     	setAlpha(255);
     	RGB2CMYK(rValue, gValue, bValue);
+    	RGB2HSV(rValue, gValue, bValue);
     }
     
 	public Pixel(int rValue, int gValue, int bValue, int alpha) {
@@ -152,7 +153,7 @@ public class Pixel {
 	 * @return the pixel's YELLOW value
 	 */   
     public int getYellow() {
-    	return ((valueCMYK >> 8 ) & 0xff);
+    	return ((valueCMYK >> 8) & 0xff);
     }
     
     /**
@@ -198,17 +199,18 @@ public class Pixel {
 		
 		//add conversion to HSV
     }
-    
+   
     /**
      * Sets an attribute of the pixel
      * @param value CMYK the pixel's CMYK value
      */
+/*
     public void setCMYK(int valueCMYK) {
     	this.valueCMYK = valueCMYK;
-    	//CMYK2RGB
+    	CMYK2RGB(getCyan(),getMagenta(),getYellow(),getBlack());
     	//CMYK2HSV
     }
-    
+ */   
     /**
      * Sets CMYK attribute of the pixel
      * @param value of Cyan
@@ -221,7 +223,7 @@ public class Pixel {
     	setMagenta(magenta);
     	setYellow(yellow);
     	setBlack(black);
-    	CMYK2RBG(cyan, magenta, yellow, black);
+    	CMYK2RGB(cyan, magenta, yellow, black);
     	//CMYK2HSV
     }
     
@@ -270,7 +272,9 @@ public class Pixel {
 	 * @param valueRed the pixel's RED value
 	 */               
 	public void setRed(int valueRed) { 
+		if(valueRed == getRed()) return;
 		valueARGB = (valueARGB & 0xff00ffff) | ((valueRed & 0xff) << 16);
+		updateFromRGB();
 	}
 
 	/**
@@ -278,7 +282,9 @@ public class Pixel {
 	 * @param valueGreen the pixel's GREEN value
 	 */              
 	public void setGreen(int valueGreen) { 
+		if(valueGreen == getGreen()) return;
 		valueARGB = (valueARGB & 0xffff00ff) | ((valueGreen & 0xff) << 8);
+		updateFromRGB();
 	}
 
 	/**
@@ -286,7 +292,9 @@ public class Pixel {
 	 * @param valueBlue the pixel's BLUE value
 	 */               
 	public void setBlue(int valueBlue) { 
+		if(valueBlue == getBlue()) return;
 		valueARGB = (valueARGB & 0xffffff00) | ((valueBlue & 0xff));
+		updateFromRGB();
 	}
 	
 	/**
@@ -294,7 +302,9 @@ public class Pixel {
 	 * @return the pixel's CYAN value
 	 */   
 	public void setCyan(int valueCyan) {
+		if(valueCyan == getCyan()) return;
 		valueCMYK = (valueCMYK & 0x00ffffff) | ((valueCyan & 0xff) << 24);
+		updateFromCMYK();
 	}
 	
 	/**
@@ -302,7 +312,9 @@ public class Pixel {
 	 * @return the pixel's MAGENTA value
 	 */   
 	public void setMagenta(int valueMagenta) {
+		if(valueMagenta == getMagenta()) return;
 		valueCMYK = (valueCMYK & 0xff00ffff) | ((valueMagenta & 0xff) << 16);
+		updateFromCMYK();
 	}
 	
 	/**
@@ -310,7 +322,9 @@ public class Pixel {
 	 * @return the pixel's YELLOW value
 	 */   
 	public void setYellow(int valueYellow) {
+		if(valueYellow == getYellow()) return;
 		valueCMYK = (valueCMYK & 0xffff00ff) | ((valueYellow & 0xff) << 8);
+		updateFromCMYK();
 	}
 	
 	/**
@@ -318,7 +332,9 @@ public class Pixel {
 	 * @return the pixel's BLACK value
 	 */   
 	public void setBlack(int valueBlack) {
+		if(valueBlack == getBlack()) return;
 		valueCMYK = (valueCMYK & 0xffffff00) | ((valueBlack & 0xff));
+		updateFromCMYK();
 	}
 	
 	/**
@@ -331,7 +347,9 @@ public class Pixel {
 		 * to stay as close as possible to the other color space method we save the HSV
 		 * on 7 bytes instead of 8 because we don't need the 8th bytes
 		 */
+		if(valueHue == getHue()) return;
 		valueHSV = (valueHSV & 0x000ffff) | ((valueHue & 0xff) << 16);
+		updateFromHSV();
 	}
 	
 	/**
@@ -339,7 +357,9 @@ public class Pixel {
 	 * @return the pixel's SATURATION value
 	 */   
 	public void setSat(int valueSat) {
+		if(valueSat == getSat()) return;
 		valueHSV = (valueHSV & 0xfff00ff) | ((valueSat & 0xff) << 8);
+		updateFromHSV();
 	}
 	
 	/**
@@ -347,7 +367,9 @@ public class Pixel {
 	 * @return the pixel's VALUE value
 	 */   
 	public void setValue(int valueValue) {
+		if(valueValue == getValue()) return;
 		valueHSV = (valueHSV & 0xfffff00) | ((valueValue & 0xff));
+		updateFromHSV();
 	}
 
 	/**
@@ -359,10 +381,10 @@ public class Pixel {
 	private void RGB2CMYK(int red, int green, int blue) {
 		CMYKConversion CMYK = new CMYKConversion();
 		CMYK.rgb2cmyk(red, green, blue);
-		setCyan((int)CMYK.getCyan());
-		setMagenta((int)CMYK.getMagenta());
-		setYellow((int)CMYK.getYellow());
-		setBlack((int)CMYK.getK());
+		setCyan(CMYK.getCyan());
+		setMagenta(CMYK.getMagenta());
+		setYellow(CMYK.getYellow());
+		setBlack(CMYK.getK());
 	}
 	
 	/**
@@ -386,7 +408,7 @@ public class Pixel {
 	 * @param yellow
 	 * @param black
 	 */
-	private void CMYK2RBG(int cyan, int magenta, int yellow, int black) {
+	private void CMYK2RGB(double cyan, double magenta, double yellow, double black) {
 		RGBConversion RGB = new RGBConversion();
 		RGB.cmyk2rgb(cyan, magenta, yellow, black);
 		setRed((int)RGB.getR1());
@@ -394,6 +416,21 @@ public class Pixel {
 		setBlue((int)RGB.getB1());
 	}
 	
+	private void updateFromRGB() {
+		RGB2CMYK(getRed(),getGreen(),getBlue());
+		RGB2HSV(getRed(),getGreen(),getBlue());
+	}
+	
+	private void updateFromCMYK() {
+		CMYK2RGB(getCyan(), getMagenta(), getYellow(), getBlack());
+		//CMYK2HSV(getCyan(), getMagenta(), getYellow(), getBlack());
+	}
+	
+	private void updateFromHSV() {
+		//HSV2RGB(getHue(),getSat(),getValue());
+		//HSV2CMYK(getHue(),getSat(),getValue());
+		
+	}
 	/**
 	 * Object's toString() method redefinition
 	 */               

@@ -13,10 +13,10 @@ class CMYKColorMediator extends Object implements SliderObserver, ObserverIF {
 	int red;
 	int green;
 	int blue;
-	int cyan;
-	int magenta;
-	int yellow;
-	int black;
+	double cyan;
+	double magenta;
+	double yellow;
+	double black;
 	BufferedImage redImage;
 	BufferedImage greenImage;
 	BufferedImage blueImage;
@@ -92,7 +92,7 @@ class CMYKColorMediator extends Object implements SliderObserver, ObserverIF {
 		
 	}
 	
-	public void computeCyanImage(int cyan, int magenta, int yellow, int black) {
+	public void computeCyanImage(double cyan, double magenta, double yellow, double black) {
 		Pixel tmp = new Pixel();
 		tmp.setCMYK(cyan,magenta,yellow,black);
 		Pixel p = new Pixel(tmp.getRed(), tmp.getGreen(), tmp.getBlue(), 255); 
@@ -108,7 +108,7 @@ class CMYKColorMediator extends Object implements SliderObserver, ObserverIF {
 		}
 	}
 	
-	public void computeMagentaImage(int cyan, int magenta, int yellow, int black) {
+	public void computeMagentaImage(double cyan, double magenta, double yellow, double black) {
 		Pixel tmp = new Pixel();
 		tmp.setCMYK(cyan,magenta,yellow,black);
 		int red = tmp.getRed();
@@ -130,7 +130,7 @@ class CMYKColorMediator extends Object implements SliderObserver, ObserverIF {
 		}		
 	}
 	
-	public void computeYellowImage(int cyan, int magenta, int yellow, int black) {
+	public void computeYellowImage(double cyan, double magenta, double yellow, double black) {
 		Pixel tmp = new Pixel();
 		tmp.setCMYK(cyan,magenta,yellow,black);
 		int red = tmp.getRed();
@@ -188,19 +188,19 @@ class CMYKColorMediator extends Object implements SliderObserver, ObserverIF {
 		slider.addObserver(this);
 	}
 
-	public int getCyan() {
+	public double getCyan() {
 		return cyan;
 	}
 
-	public int getMagenta() {
+	public double getMagenta() {
 		return magenta;
 	}
 
-	public int getYellow() {
+	public double getYellow() {
 		return yellow;
 	}
 
-	public int getBlack() {
+	public double getBlack() {
 		return black;
 	}
 
@@ -213,9 +213,9 @@ class CMYKColorMediator extends Object implements SliderObserver, ObserverIF {
 		yellow = result.getPixel().getYellow();
 		black = result.getPixel().getBlack();
 		
-		cyanCS.setValue(cyan);
-		magentaCS.setValue(magenta);
-		yellowCS.setValue(yellow);
+		cyanCS.setValue((int)cyan*255);
+		magentaCS.setValue((int)magenta*255);
+		yellowCS.setValue((int)yellow*255);
 		computeCyanImage(cyan, magenta, yellow, black);
 		computeMagentaImage(cyan, magenta, yellow, black);
 		computeYellowImage(cyan, magenta, yellow, black);
