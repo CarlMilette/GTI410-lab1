@@ -23,6 +23,7 @@ public class CMYKConversion {
 		this.cyan = (1 - r - this.k)/(1 - this.k);
 		this.magenta = (1 - g - this.k)/(1 - this.k);
 		this.yellow = (1 - b - this.k)/(1 - this.k);
+		
 	}
 	
 	private double max(double color1, double color2, double color3) {

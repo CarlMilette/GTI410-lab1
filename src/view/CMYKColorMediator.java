@@ -13,10 +13,10 @@ class CMYKColorMediator extends Object implements SliderObserver, ObserverIF {
 	int red;
 	int green;
 	int blue;
-	double cyan;
-	double magenta;
-	double yellow;
-	double black;
+	int cyan;
+	int magenta;
+	int yellow;
+	int black;
 	BufferedImage redImage;
 	BufferedImage greenImage;
 	BufferedImage blueImage;
@@ -92,7 +92,7 @@ class CMYKColorMediator extends Object implements SliderObserver, ObserverIF {
 		
 	}
 	
-	public void computeCyanImage(double cyan, double magenta, double yellow, double black) {
+	public void computeCyanImage(int cyan, int magenta, int yellow, int black) {
 		Pixel tmp = new Pixel();
 		tmp.setCMYK(cyan,magenta,yellow,black);
 		Pixel p = new Pixel(tmp.getRed(), tmp.getGreen(), tmp.getBlue(), 255); 
@@ -108,7 +108,7 @@ class CMYKColorMediator extends Object implements SliderObserver, ObserverIF {
 		}
 	}
 	
-	public void computeMagentaImage(double cyan, double magenta, double yellow, double black) {
+	public void computeMagentaImage(int cyan, int magenta, int yellow, int black) {
 		Pixel tmp = new Pixel();
 		tmp.setCMYK(cyan,magenta,yellow,black);
 		int red = tmp.getRed();
@@ -130,7 +130,7 @@ class CMYKColorMediator extends Object implements SliderObserver, ObserverIF {
 		}		
 	}
 	
-	public void computeYellowImage(double cyan, double magenta, double yellow, double black) {
+	public void computeYellowImage(int cyan, int magenta, int yellow, int black) {
 		Pixel tmp = new Pixel();
 		tmp.setCMYK(cyan,magenta,yellow,black);
 		int red = tmp.getRed();

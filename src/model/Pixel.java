@@ -381,10 +381,10 @@ public class Pixel {
 	private void RGB2CMYK(int red, int green, int blue) {
 		CMYKConversion CMYK = new CMYKConversion();
 		CMYK.rgb2cmyk(red, green, blue);
-		setCyan(CMYK.getCyan());
-		setMagenta(CMYK.getMagenta());
-		setYellow(CMYK.getYellow());
-		setBlack(CMYK.getK());
+		setCyan((int)(255*CMYK.getCyan()));
+		setMagenta((int)(255*CMYK.getMagenta()));
+		setYellow((int)(255*CMYK.getYellow()));
+		setBlack((int)(255*CMYK.getK()));
 	}
 	
 	/**
