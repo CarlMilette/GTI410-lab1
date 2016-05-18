@@ -41,7 +41,6 @@ public class ColorDialog extends JDialog {
 	private JButton okButton;
 	private RGBColorMediator rgbMediator;
 	private CMYKColorMediator cmykMediator;
-	private HSVColorMediator hsvMediator;
 	private ActionListener okActionListener;
 	private ColorDialogResult result;
 	
@@ -123,11 +122,10 @@ public class ColorDialog extends JDialog {
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-		ColorSlider csCyan = new ColorSlider("C:", result.getPixel().getCyan(), cmykMediator.getCyanImage());
-		ColorSlider csMagenta = new ColorSlider("M:", result.getPixel().getMagenta(), cmykMediator.getMagentaImage());
-		ColorSlider csYellow = new ColorSlider("Y:", result.getPixel().getYellow(), cmykMediator.getYellowImage());
-		ColorSlider csBlack = new ColorSlider("K:", result.getPixel().getBlack(), cmykMediator.getBlackImage());
+		ColorSlider csCyan = new ColorSlider("C:",cmykMediator.getCyan(),cmykMediator.getCyanImage());
+		ColorSlider csMagenta = new ColorSlider("M:",cmykMediator.getMagenta(),cmykMediator.getMagentaImage());
+		ColorSlider csYellow = new ColorSlider("Y:",cmykMediator.getYellow(),cmykMediator.getYellowImage());
+		ColorSlider csBlack = new ColorSlider("K:",cmykMediator.getBlack(),cmykMediator.getBlackImage());
 		
 		cmykMediator.setCyanCS(csCyan);
 		cmykMediator.setMagentaCS(csMagenta);
@@ -140,28 +138,12 @@ public class ColorDialog extends JDialog {
 		panel.add(csYellow);
 		panel.add(csBlack);
 		
-		
 		return panel;
 	}
 	
 	private JPanel createHSVPanel(ColorDialogResult result, int imageWidths) {	
-		hsvMediator = new HSVColorMediator(result, imageWidths, 30);
-		
 		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
-		ColorSlider csHue = new ColorSlider("H:", result.getPixel().getHue(), hsvMediator.getHueImage());
-		ColorSlider csSaturation = new ColorSlider("S:", result.getPixel().getSaturation(), hsvMediator.getSaturationImage());
-		ColorSlider csValue = new ColorSlider("V:", result.getPixel().getValue(), hsvMediator.getValueImage());
-		
-		hsvMediator.setHueCS(csHue);
-		hsvMediator.setSaturationCS(csSaturation);
-		hsvMediator.setValueCS(csValue);
-		
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(csHue);
-		panel.add(csSaturation);
-		panel.add(csValue);
 		return panel;
 	}
 }

@@ -84,11 +84,7 @@ class RGBColorMediator extends Object implements SliderObserver, ObserverIF {
 			computeBlueImage(red, green, blue);
 		}
 		
-		Pixel pixel = new Pixel();
-		pixel.setRed(red);
-		pixel.setGreen(green);
-		pixel.setBlue(blue);
-		pixel.setAlpha(255);
+		Pixel pixel = new Pixel(red, green, blue, 255);
 		result.setPixel(pixel);
 	}
 	

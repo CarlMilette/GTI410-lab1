@@ -19,15 +19,10 @@ public class CMYKConversion {
 		double g = ((double)green)/(double)255;
 		double b = ((double)blue)/(double)255;
 		
-
-		//this.k = 1 - max(r, g, b);
-		if( k != 1.0){
-			
-			this.cyan = (1 - r - this.k)/(1 - this.k);
-			this.magenta = (1 - g - this.k)/(1 - this.k);
-			this.yellow = (1 - b - this.k)/(1 - this.k);
-		}
-		
+		this.k = 1 - max(r, g, b);
+		this.cyan = (1 - r - this.k)/(1 - this.k);
+		this.magenta = (1 - g - this.k)/(1 - this.k);
+		this.yellow = (1 - b - this.k)/(1 - this.k);
 	}
 	
 	private double max(double color1, double color2, double color3) {
