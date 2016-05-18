@@ -40,6 +40,7 @@ public class Pixel {
     public Pixel() {
 		valueARGB = 0;
 		RGB2CMYK();
+		RGB2HSV();
     }
     
 	/**
@@ -49,6 +50,7 @@ public class Pixel {
     public Pixel(int valueARGB) {
         this.valueARGB = valueARGB;
         RGB2CMYK();
+        RGB2HSV();
     }
     
     public Pixel(int rValue, int gValue, int bValue) {
@@ -57,6 +59,7 @@ public class Pixel {
     	setBlue(bValue);
     	setAlpha(255);
     	RGB2CMYK();
+    	RGB2HSV();
     }
     
 	public Pixel(int rValue, int gValue, int bValue, int alpha) {
@@ -65,6 +68,7 @@ public class Pixel {
 		setBlue(bValue);
 		setAlpha(alpha);
 		RGB2CMYK();
+		RGB2HSV();
 	}    
     
     public Pixel(PixelDouble pixel) {
@@ -73,6 +77,7 @@ public class Pixel {
 		setBlue((int)pixel.getBlue());
 		setAlpha((int)pixel.getAlpha());
 		RGB2CMYK();
+		RGB2HSV();
     }
     
 	/**
@@ -271,6 +276,44 @@ public class Pixel {
 		setRed((int)RGB.getR1());
 		setGreen((int)RGB.getG1());
 		setBlue((int)RGB.getB1());
+	}
+	
+	private void CMYK2HSV() {
+		//there's no direct conversion from CMYK to HSV 
+		//so we use CMYK to RGB and RGB to CMYK
+		//We're not calling existing method to not modify
+		//the value already good
+		RGBConversion RGB = new RGBConversion();
+		RGB.cmyk2rgb(this.getCyan(), this.getMagenta(), this.getYellow(), this.getBlack());
+		//conversion from CMYK to RGB done
+		//now we take the result and send it to RGB to HSV
+		HSVConversion HSV = new HSVConversion();
+		HSV.rgb2Hsv((int)RGB.getR1(), (int)RGB.getG1(), (int)RGB.getB1());
+		setHue((int)HSV.getH());
+		setSaturation(percent2bytes(HSV.getS()));
+		setValue(percent2bytes(HSV.getV()));
+	}
+	
+	private void HSV2RGB() {
+		RGBConversion RGB = new RGBConversion();
+		RGB.hsv2rgb(this.getHue(), this.getSaturation(), this.getValue());
+		setRed((int)RGB.getR2());
+		setGreen(percent2bytes(RGB.getG2()));
+		setBlue(percent2bytes(RGB.getB2()));
+	}
+	
+	private void HSV2CMYK() {
+		//There's not straight conversion we need to pass by RGB conversion
+		RGBConversion RGB = new RGBConversion();
+		RGB.hsv2rgb(this.getHue(), this.getSaturation(), this.getValue());
+		
+		CMYKConversion CMYK = new CMYKConversion();
+		CMYK.rgb2cmyk((int)RGB.getR1(), (int)RGB.getG1(), (int)RGB.getB1());
+		setCyan(percent2bytes(CMYK.getCyan()));
+		setMagenta(percent2bytes(CMYK.getMagenta()));
+		setYellow(percent2bytes(CMYK.getYellow()));
+		setBlack(percent2bytes(CMYK.getK()));
+		
 	}
 
 	/**
