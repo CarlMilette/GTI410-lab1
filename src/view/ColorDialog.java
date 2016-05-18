@@ -123,11 +123,11 @@ public class ColorDialog extends JDialog {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		
+		//the CMYK value are *100 to be able to get an int value, since CMYK is expreced from 0 to 1 now we got a percent value
 		ColorSlider csCyan = new ColorSlider("C:", result.getPixel().getCyan(), cmykMediator.getCyanImage());
 		ColorSlider csMagenta = new ColorSlider("M:", result.getPixel().getMagenta(), cmykMediator.getMagentaImage());
 		ColorSlider csYellow = new ColorSlider("Y:", result.getPixel().getYellow(), cmykMediator.getYellowImage());
-		//ColorSlider csBlack = new ColorSlider("K:", 1, cmykMediator.getBlackImage());
+		//ColorSlider csBlack = new ColorSlider("K:", result.getPixel().getBlack(), cmykMediator.getBlackImage());
 		
 		cmykMediator.setCyanCS(csCyan);
 		cmykMediator.setMagentaCS(csMagenta);
