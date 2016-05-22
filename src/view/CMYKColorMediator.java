@@ -8,106 +8,120 @@ import controller.RGBConversion;
 import controller.CMYKConversion;
 
 public class CMYKColorMediator extends Object implements SliderObserver, ObserverIF {
+	
+    final int CYAN = 0;
+    final int MAGENTA = 1;
+    final int YELLOW = 2;
+    final int BLACK = 3;
+    final int RED = 0;
+    final int GREEN = 1;
+    final int BLUE = 2;
 
-	final int cyan = 0;
-	final int magenta = 1;
-	final int yellow = 2;
-	final int black = 3;
-	final int red = 0;
-	final int green = 1;
-	final int blue = 2;
 	ColorSlider cyanCS;
 	ColorSlider magentaCS;
 	ColorSlider yellowCS;
 	ColorSlider blackCS;
+	
 	BufferedImage cyanImage;
 	BufferedImage magentaImage;
 	BufferedImage yellowImage;
 	BufferedImage blackImage;
+	
+	int red;
+	int green;
+	int blue;
+	
+	int cyan;
+	int magenta;
+	int yellow;
+	int black;
+	
 	int imagesWidth;
 	int imagesHeight;
-	int[] rgbArray = new int[3];
-	int[] cmykArray = new int[4];
 	ColorDialogResult result;
 	
 		public CMYKColorMediator(ColorDialogResult result, int imagesWidth, int imagesHeight) {
 			this.imagesWidth = imagesWidth;
 			this.imagesHeight = imagesHeight;
-			this.rgbArray[red] = result.getPixel().getRed();
-			this.rgbArray[green] = result.getPixel().getGreen();
-			this.rgbArray[blue] = result.getPixel().getBlue();
+			this.red = result.getPixel().getRed();
+			this.green = result.getPixel().getGreen();
+			this.blue = result.getPixel().getBlue();
 			this.result = result;
 			result.addObserver(this);
 			
-			RGB2CMYK();
+			int[] cmykArray = RGB2CMYK(red,green,blue);
+			this.cyan = cmykArray[CYAN];
+			this.magenta = cmykArray[MAGENTA];
+			this.yellow = cmykArray[YELLOW];
+			this.black = cmykArray[BLACK];
 			
 			cyanImage = new BufferedImage(imagesWidth, imagesHeight, BufferedImage.TYPE_INT_ARGB);
 			magentaImage = new BufferedImage(imagesWidth, imagesHeight, BufferedImage.TYPE_INT_ARGB);
 			yellowImage = new BufferedImage(imagesWidth, imagesHeight, BufferedImage.TYPE_INT_ARGB);
 			blackImage = new BufferedImage(imagesWidth, imagesHeight, BufferedImage.TYPE_INT_ARGB);
 			
-			computeCyanImage();
-			computeMagentaImage();
-			computeYellowImage();
-			//computeBlackImage();
+			computeCyanImage(cyan,magenta,yellow,black);
+			computeMagentaImage(cyan,magenta,yellow,black);
+			computeYellowImage(cyan,magenta,yellow,black);
+			computeBlackImage(cyan,magenta,yellow,black);
 		}
 		
 	public void update(ColorSlider s, int v) {
 		boolean updateCyan = false;
 		boolean updateMagenta = false;
 		boolean updateYellow = false;
-		//boolean updateBlack = false;
-		if (s == cyanCS && v != cmykArray[cyan]) {
-			cmykArray[cyan] = v;
+		boolean updateBlack = false;
+		if (s == cyanCS && v != cyan) {
+			cyan = v;
 			updateMagenta = true;
 			updateYellow = true;
-		//	updateBlack = true;
+			updateBlack = true;
 		}
-		if (s == magentaCS && v != cmykArray[magenta]) {
-			cmykArray[magenta] = v;
+		if (s == magentaCS && v != magenta) {
+			magenta = v;
 			updateCyan = true;
 			updateYellow = true;
-		//	updateBlack = true;
+			updateBlack = true;
 		}
-		if (s == yellowCS && v != cmykArray[yellow]) {
-			cmykArray[yellow] = v;
+		if (s == yellowCS && v != yellow) {
+			yellow = v;
 			updateCyan = true;
 			updateMagenta = true;
-		//	updateBlack = true;
+			updateBlack = true;
 		}
-//		if (s == blackCS && v != cmykArray[black]) {
-//			cmykArray[black] = v;
-//			updateCyan = true;
-//			updateMagenta = true;
-//			updateYellow = true;
-//		}
+		if (s == blackCS && v != black) {
+			black = v;
+			updateCyan = true;
+			updateMagenta = true;
+			updateYellow = true;
+		}
 		if (updateCyan) {
-			computeCyanImage();
+			computeCyanImage(cyan,magenta,yellow,black);
 		}
 		if (updateMagenta) {
-			computeMagentaImage();
+			computeMagentaImage(cyan,magenta,yellow,black);
 		}
 		if (updateYellow) {
-			computeYellowImage();
+			computeYellowImage(cyan,magenta,yellow,black);
 		}
-//		if (updateBlack) {
-//			computeBlackImage();
-//		}
+		if (updateBlack) {
+			computeBlackImage(cyan,magenta,yellow,black);
+		}
 		
-		System.out.println("C:" + cmykArray[cyan] + "M:" + cmykArray[magenta] + "Y:" + cmykArray[yellow]);
-		
-		CMYK2RGB();
-		Pixel pixel = new Pixel(rgbArray[red], rgbArray[green], rgbArray[blue], 255);
+
+		int[] rgbArray = CMYK2RGB(cyan,magenta,yellow,black);
+		Pixel pixel = new Pixel(rgbArray[RED],rgbArray[GREEN],rgbArray[BLUE],255);
 		result.setPixel(pixel);
 		
 	}
 	
-	private void computeCyanImage() {
-		CMYK2RGB();
-		Pixel p = new Pixel(this.rgbArray[red],this.rgbArray[green], this.rgbArray[blue], 255); 
+	private void computeCyanImage(int cyan, int magenta, int yellow, int black) {
+		//System.out.println("C: " + cyan + " M:" + magenta + " Y:" + yellow + " B:" + black);
+		int rgbArray[] = CMYK2RGB(cyan,magenta,yellow,black);
+		Pixel p = new Pixel(rgbArray[RED], rgbArray[GREEN], rgbArray[BLUE], 255); 
 		for (int i = 0; i<imagesWidth; ++i) {
-			//p.setRed((int)(255 - cmykArray[black] - (((double)i / (double)imagesWidth)*(255.0 - cmykArray[black])))); 
-			p.setRed((int)(255 - (((double)i / (double)imagesWidth)*255.0)));
+			p.setRed((int)(255 - black - (((double)i / (double)imagesWidth)*(255.0 - black)))); 
+			//p.setRed((int)(((double)i / (double)imagesWidth)*255.0));
 			int rgb = p.getARGB();
 			for (int j = 0; j<imagesHeight; ++j) {
 				cyanImage.setRGB(i, j, rgb);
@@ -118,12 +132,12 @@ public class CMYKColorMediator extends Object implements SliderObserver, Observe
 		}
 	}
 	
-	private void computeMagentaImage() {
-		CMYK2RGB();
-		Pixel p = new Pixel(this.rgbArray[red],this.rgbArray[green], this.rgbArray[blue], 255); 
+	private void computeMagentaImage(int cyan, int magenta, int yellow, int black) {
+		int rgbArray[] = CMYK2RGB(cyan,magenta,yellow,black);
+		Pixel p = new Pixel(rgbArray[RED], rgbArray[GREEN], rgbArray[BLUE], 255); 
 		for (int i = 0; i<imagesWidth; ++i) {
-			//p.setGreen((int)(255 - cmykArray[black] - (((double)i / (double)imagesWidth)*(255.0 - cmykArray[black])))); 
-			p.setGreen((int)(255 - (((double)i / (double)imagesWidth)*255.0))); 
+			p.setGreen((int)(255 - black - (((double)i / (double)imagesWidth)*(255.0 - black)))); 
+			//p.setGreen((int)(((double)i / (double)imagesWidth)*255.0)); 
 			int rgb = p.getARGB();
 			for (int j = 0; j<imagesHeight; ++j) {
 				magentaImage.setRGB(i, j, rgb);
@@ -135,12 +149,12 @@ public class CMYKColorMediator extends Object implements SliderObserver, Observe
 		
 	}
 	
-	private void computeYellowImage() {
-		CMYK2RGB();
-		Pixel p = new Pixel(this.rgbArray[red],this.rgbArray[green], this.rgbArray[blue], 255); 
+	private void computeYellowImage(int cyan, int magenta, int yellow, int black) {
+		int rgbArray[] = CMYK2RGB(cyan,magenta,yellow,black);
+		Pixel p = new Pixel(rgbArray[RED], rgbArray[GREEN], rgbArray[BLUE], 255); 
 		for (int i = 0; i<imagesWidth; ++i) {
-			//p.setBlue((int)(255 - cmykArray[black] - (((double)i / (double)imagesWidth)*(255.0 - cmykArray[black])))); 
-			p.setBlue((int)(255 - (((double)i / (double)imagesWidth)*255.0)));
+			p.setBlue((int)(255 - black - (((double)i / (double)imagesWidth)*(255.0 - black)))); 
+			//p.setBlue((int)(((double)i / (double)imagesWidth)*255.0));
 			int rgb = p.getARGB();
 			for (int j = 0; j<imagesHeight; ++j) {
 				yellowImage.setRGB(i, j, rgb);
@@ -152,25 +166,17 @@ public class CMYKColorMediator extends Object implements SliderObserver, Observe
 			
 	}
 	
-	private void computeBlackImage() {
-		CMYK2RGB();
-		int blackCSValue;
-		int[] rgbTmp = new int[3];
-		RGBConversion RGB = new RGBConversion();
-		
-		Pixel p = new Pixel(this.rgbArray[red],this.rgbArray[green], this.rgbArray[blue], 255); 
+	private void computeBlackImage(int cyan, int magenta, int yellow, int black) {
+		int rgbArray[] = CMYK2RGB(cyan,magenta,yellow,black);
+		Pixel p = new Pixel(rgbArray[RED], rgbArray[GREEN], rgbArray[BLUE], 255); 
 		for (int i = 0; i<imagesWidth; ++i) {
 			
-			blackCSValue = ((int)Math.floor(((double)i / (double)imagesWidth)*255.0));
-			RGB.cmyk2rgb(cmykArray[cyan], cmykArray[magenta], cmykArray[yellow], blackCSValue);
-
-			rgbTmp[red] = (int)RGB.getR1();
-			rgbTmp[green] = (int)RGB.getG1();
-			rgbTmp[blue] = (int)RGB.getB1();
+			int blackValue = (int)Math.round((((double)i/(double)imagesWidth)*255.0));
 			
-			p.setRed(rgbTmp[red]); 
-			p.setGreen(rgbTmp[green]);
-			p.setBlue(rgbTmp[blue]);
+			int[] rgbTmp = CMYK2RGB(cyan,magenta,yellow,blackValue);
+			p.setRed(rgbTmp[RED]); 
+			p.setGreen(rgbTmp[GREEN]);
+			p.setBlue(rgbTmp[BLUE]);
 			
 			int rgb = p.getARGB();
 			for (int j = 0; j<imagesHeight; ++j) {
@@ -201,83 +207,100 @@ public class CMYKColorMediator extends Object implements SliderObserver, Observe
 	}
 	
 	public void setCyanCS(ColorSlider slider) {
-		this.cyanCS = slider;
+		cyanCS = slider;
 		slider.addObserver(this);
 	}
 
 	public void setMagentaCS(ColorSlider slider) {
-		this.magentaCS = slider;
+		magentaCS = slider;
 		slider.addObserver(this);
 	}
 
 	public void setYellowCS(ColorSlider slider) {
-		this.yellowCS = slider;
+		yellowCS = slider;
 		slider.addObserver(this);
 	}
 
 	public void setBlackCS(ColorSlider slider) {
-		this.blackCS = slider;
+		blackCS = slider;
 		slider.addObserver(this);
 	}
 	
 	public int getCyan() {
-		return cmykArray[cyan];
+		return cyan;
 	}
 
 	public int getMagenta() {
-		return cmykArray[magenta];
+		return magenta;
 	}
 
 	public int getYellow() {
-		return cmykArray[yellow];
+		return yellow;
 	}
 
 	public int getBlack() {
-		return cmykArray[black];
+		return black;
 	}
 
 	@Override
 	public void update() {
-		CMYK2RGB();
-		Pixel currentColor = new Pixel(rgbArray[red], rgbArray[green], rgbArray[blue], 255);
+		int[] rgbArray = CMYK2RGB(cyan,magenta,yellow,black);
+		Pixel currentColor = new Pixel(rgbArray[RED],rgbArray[GREEN], rgbArray[BLUE], 255);
 		if(currentColor.getARGB() == result.getPixel().getARGB()) return;
 		
-		rgbArray[red] = result.getPixel().getRed();
-		rgbArray[green] = result.getPixel().getGreen();
-		rgbArray[blue] = result.getPixel().getBlue();
+		red = result.getPixel().getRed();
+		green = result.getPixel().getGreen();
+		blue = result.getPixel().getBlue();
 		
-		RGB2CMYK();
+		int[] cmykArray = RGB2CMYK(this.red, this.green, this.blue);
 		
-		cyanCS.setValue(cmykArray[cyan]);
-		magentaCS.setValue(cmykArray[magenta]);
-		yellowCS.setValue(cmykArray[yellow]);
-		//blackCS.setValue(cmykArray[black]);
+		this.cyan = cmykArray[CYAN];
+		this.magenta = cmykArray[MAGENTA];
+		this.yellow = cmykArray[YELLOW];
+		this.black = cmykArray[BLACK];
 		
-		computeCyanImage();
-		computeMagentaImage();
-		computeYellowImage();
-		//computeBlackImage();
+		cyanCS.setValue(cmykArray[CYAN]);
+		magentaCS.setValue(cmykArray[MAGENTA]);
+		yellowCS.setValue(cmykArray[YELLOW]);
+		blackCS.setValue(cmykArray[BLACK]);
+	
+		computeCyanImage(cyan,magenta,yellow,black);
+		computeMagentaImage(cyan,magenta,yellow,black);
+		computeYellowImage(cyan,magenta,yellow,black);
+		computeBlackImage(cyan,magenta,yellow,black);
 		
 	}
 	
-	private void RGB2CMYK() {
+	private int[] RGB2CMYK(int red, int green, int blue) {
 		CMYKConversion CMYK = new CMYKConversion();
-		CMYK.rgb2cmyk(rgbArray[red], rgbArray[green], rgbArray[blue]);
-		this.cmykArray[cyan] = (int)(Math.round(CMYK.getCyan()*255));
-		this.cmykArray[magenta] = (int)(Math.round(CMYK.getMagenta()*255));
-		this.cmykArray[yellow] = (int)(Math.round(CMYK.getYellow()*255));
-		this.cmykArray[black] = (int)(Math.round(CMYK.getK()*255));
+		int[] cmyk = new int[4];
+		System.out.println("R:" + red + "G:" + green + "B:" + blue);
+		CMYK.rgb2cmyk(red, green, blue);
+		System.out.println("C: " +(int)(CMYK.getCyan()*255)+" M:"+(int)(CMYK.getMagenta()*255)+" Y:"+(int)(CMYK.getYellow()*255)+" B:"+(int)(CMYK.getK()*255));
+		cmyk[CYAN] = (int)(CMYK.getCyan()*255);
+		cmyk[MAGENTA] = (int)(CMYK.getMagenta()*255);
+		cmyk[YELLOW] = (int)(CMYK.getYellow()*255);
+		cmyk[BLACK] = (int)(CMYK.getK()*255);
+		return cmyk;
 	}
 	
-	private void CMYK2RGB() {
+	private int[] CMYK2RGB(int cyan, int magenta, int yellow, int black) {
 		RGBConversion RGB = new RGBConversion();
-		RGB.cmyk2rgb(cmykArray[cyan], cmykArray[magenta], cmykArray[yellow], cmykArray[black]);
-		this.rgbArray[red]= (int)RGB.getR1();
-		this.rgbArray[green] = (int)RGB.getG1();
-		this.rgbArray[blue] = (int)RGB.getB1();
-	}
-	
-	
-	
+		int[] rgb = new int[3];
+		
+		//conversion du CMYK qui est en int vers des double accepter par l'algo de conversion
+		double[] tmpCmyk = new double [4];
+		tmpCmyk[CYAN] = ((double)cyan/255);
+		tmpCmyk[MAGENTA] = ((double)magenta/255);
+		tmpCmyk[YELLOW] = ((double)yellow/255);
+		tmpCmyk[BLACK] = ((double)black/255);
+		//System.out.println("In CMYK2RGB C:" + cyan + " M:" + magenta + " Y:" + yellow + " B:" +black);
+		//System.out.println("In CMYK2RGB C:" + tmpCmyk[CYAN] + " M:" + tmpCmyk[MAGENTA] + " Y:" + tmpCmyk[YELLOW] + " B:" + tmpCmyk[BLACK]);
 
+		RGB.cmyk2rgb(tmpCmyk[CYAN], tmpCmyk[MAGENTA], tmpCmyk[YELLOW], tmpCmyk[BLACK]);
+		rgb[RED] = (int)(RGB.getR1());
+		rgb[GREEN] = (int)(RGB.getG1());
+		rgb[BLUE] = (int)(RGB.getB1());
+		return rgb;
+	}
 }
