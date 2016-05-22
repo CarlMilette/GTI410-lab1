@@ -87,15 +87,66 @@ public class HSVColorMediator extends Object implements SliderObserver, Observer
 	}
 
 	private void computeHueImage() {
+		HSV2RGB();
+		int C;
+		int X;
+		int M;
+		int redTemp;
+		int greenTemp;
+		int blueTemp;
 		
+		for (int i = 0; i<imagesWidth; ++i) {
+			//Determine le hue selon l'etat de la boucle puis on convertit le HSV vers le RGB pour etablir le pixel
+			hsvArray[hue]= (int)((float)i*(360/(float)imagesWidth));
+			C = (value*saturation)*255;
+			X = ((value*saturation) * (1 - Math.abs(((hue / 60)%2) - 1)))*255;
+			M = (value - (value*saturation))*255;
+			if(0<=hue && hue<60){redTemp=C;greenTemp=X;blueTemp=0;}
+			else if(60<=hue && hue<120){redTemp=X;greenTemp=C;blueTemp=0;}
+			else if(120<=hue && hue<180){redTemp=0;greenTemp=C;blueTemp=X;}
+			else if(180<=hue && hue<240){redTemp=0;greenTemp=X;blueTemp=C;}
+			else if(240<=hue && hue<300){redTemp=X;greenTemp=0;blueTemp=C;}
+			else{ redTemp=C;greenTemp=0;blueTemp=X;}
+			Pixel p=new Pixel((int)(redTemp+M),(int)(greenTemp+M),(int)(blueTemp+M));
+			//set le resultat de la couleur pour chaque pixel en hauteur(ligne verticale)
+			for (int j = 0; j<imagesHeight; ++j) {
+				hueImage.setRGB(i, j, p.getARGB());
+			}
+		}
 	}
 
 	private void computeSaturationImage() {
-		
+		HSV2RGB();
+		Pixel p = new Pixel(rgbArray[red],rgbArray[green], rgbArray[blue], 255); 
+		for (int i = 0; i<imagesWidth; ++i) {
+			p.setRed((int)(((double)i / (double)imagesWidth)*255.0)); 
+			p.setGreen((int)(((double)i / (double)imagesWidth)*255.0)); 
+			p.setBlue((int)(((double)i / (double)imagesWidth)*255.0)); 
+			int rgb = p.getARGB();
+			for (int j = 0; j<imagesHeight; ++j) {
+				saturationImage.setRGB(i, j, rgb);
+			}
+		}
+		if (saturationCS != null) {
+			saturationCS.update(saturationImage);
+		}
 	}
 
 	private void computeValueImage() {
-		
+		HSV2RGB();
+		Pixel p = new Pixel(rgbArray[red],rgbArray[green], rgbArray[blue], 255); 
+		for (int i = 0; i<imagesWidth; ++i) {
+			p.setRed((int)(((double)i / (double)imagesWidth)*255.0)); 
+			p.setGreen((int)(((double)i / (double)imagesWidth)*255.0)); 
+			p.setBlue((int)(((double)i / (double)imagesWidth)*255.0)); 
+			int rgb = p.getARGB();
+			for (int j = 0; j<imagesHeight; ++j) {
+				valueImage.setRGB(i, j, rgb);
+			}
+		}
+		if (valueCS != null) {
+			valueCS.update(valueImage);
+		}
 	}
 
 	public BufferedImage getHueImage() {
