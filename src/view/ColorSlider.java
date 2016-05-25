@@ -34,7 +34,7 @@ import javax.swing.JPanel;
  * <p>Title: ColorSlider</p>
  * <p>Description: ... (JPanel)</p>
  * <p>Copyright: Copyright (c) 2003 Mohammed Elghaouat, Eric Paquette</p>
- * <p>Company: (ÉTS) - École de Technologie Supérieure</p>
+ * <p>Company: (ï¿½TS) - ï¿½cole de Technologie Supï¿½rieure</p>
  * @author unascribed
  * @version $Revision: 1.6 $
  */

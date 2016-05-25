@@ -276,7 +276,7 @@ public class CMYKColorMediator extends Object implements SliderObserver, Observe
 		int[] cmyk = new int[4];
 		System.out.println("R:" + red + "G:" + green + "B:" + blue);
 		CMYK.rgb2cmyk(red, green, blue);
-		System.out.println("C: " +(int)(CMYK.getCyan()*255)+" M:"+(int)(CMYK.getMagenta()*255)+" Y:"+(int)(CMYK.getYellow()*255)+" B:"+(int)(CMYK.getK()*255));
+		System.out.println("C: " + (int)(CMYK.getCyan()*255) +" M:"+ (int)(CMYK.getMagenta()*255) +" Y:"+ (int)(CMYK.getYellow()*255) +" K:"+ (int)(CMYK.getK()*255));
 		cmyk[CYAN] = (int)(CMYK.getCyan()*255);
 		cmyk[MAGENTA] = (int)(CMYK.getMagenta()*255);
 		cmyk[YELLOW] = (int)(CMYK.getYellow()*255);
@@ -298,9 +298,9 @@ public class CMYKColorMediator extends Object implements SliderObserver, Observe
 		//System.out.println("In CMYK2RGB C:" + tmpCmyk[CYAN] + " M:" + tmpCmyk[MAGENTA] + " Y:" + tmpCmyk[YELLOW] + " B:" + tmpCmyk[BLACK]);
 
 		RGB.cmyk2rgb(tmpCmyk[CYAN], tmpCmyk[MAGENTA], tmpCmyk[YELLOW], tmpCmyk[BLACK]);
-		rgb[RED] = (int)(RGB.getR1());
-		rgb[GREEN] = (int)(RGB.getG1());
-		rgb[BLUE] = (int)(RGB.getB1());
+		rgb[RED] = (RGB.getR());
+		rgb[GREEN] = (RGB.getG());
+		rgb[BLUE] = (RGB.getB());
 		return rgb;
 	}
 }

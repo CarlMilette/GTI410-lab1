@@ -9,7 +9,7 @@ public class application {
 
 	 CMYKConversion test1 = new CMYKConversion();
     	
-	 test1.rgb2cmyk(40, 10, 30);
+	 test1.rgb2cmyk(0, 255, 0);
 	
 	 System.out.println("RGB TO CMYK===================");
 	System.out.print("Cyan:" +test1.getCyan());
@@ -27,7 +27,7 @@ public class application {
 	System.out.println("RGB TO HSV===================");
 		
 	HSVConversion test2 = new HSVConversion();
-	test2.rgb2Hsv(40, 10, 30);
+	test2.rgb2Hsv(0, 255, 0);
 	
 	System.out.print("H:" +test2.getH());
 	System.out.println();
@@ -42,32 +42,27 @@ public class application {
 	
 	RGBConversion test3 = new RGBConversion();
 	
-	test3.cmyk2rgb(0.0, 0.7500000000000002, 0.24999999999999983, 0.8431372549019608);
+	test3.cmyk2rgb(1, 0, 1, 0);
 	
-	System.out.print("R:" +test3.getR1());
+	System.out.print("R:" +test3.getR());
 	System.out.println();
-	System.out.print("G:" +test3.getG1());
+	System.out.print("G:" +test3.getG());
 	System.out.println();
-	System.out.print("B:" +test3.getB1());
+	System.out.print("B:" +test3.getB());
 	System.out.println();
 	System.out.println();
 
 System.out.println("HSV TO RGB===================");
 	
 	
-	test3.hsv2rgb(320.0, 0.75, 0.1568627450980392);
+	test3.hsv2rgb(120, 100, 100);
 	
-	System.out.print("R:" +test3.getR2());
+	System.out.print("R:" +test3.getR());
 	System.out.println();
-	System.out.print("G:" +test3.getG2());
+	System.out.print("G:" +test3.getG());
 	System.out.println();
-	System.out.print("B:" +test3.getB2());
+	System.out.print("B:" +test3.getB());
 	System.out.println();
-	
-	
-	
-	
-	
 	
 	}
 

@@ -50,7 +50,7 @@ public class HSVColorMediator extends Object implements SliderObserver, Observer
 		this.hue = hsvArray[HUE];
 		this.saturation = hsvArray[SATURATION];
 		this.value = hsvArray[VALUE];
-		
+		System.out.println("HSVARRAY HUE: " + hsvArray[HUE] + "SAT: " + hsvArray[SATURATION] + "VALUE: " + hsvArray[VALUE]);
 		hueImage = new BufferedImage(imagesWidth, imagesHeight, BufferedImage.TYPE_INT_ARGB);
 		saturationImage = new BufferedImage(imagesWidth, imagesHeight, BufferedImage.TYPE_INT_ARGB);
 		valueImage = new BufferedImage(imagesWidth, imagesHeight, BufferedImage.TYPE_INT_ARGB);
@@ -99,7 +99,7 @@ public class HSVColorMediator extends Object implements SliderObserver, Observer
 		Pixel p=new Pixel(rgbArray[RED],rgbArray[GREEN],rgbArray[BLUE]);
 		
 		for (int i = 0; i<imagesWidth; ++i) {
-			//comme un seul slider gère la couleur on prend la valeur du slider pour
+			//comme un seul slider gï¿½re la couleur on prend la valeur du slider pour
 			//recalculer tous les couleur
 			int tmpHue = (int) Math.floor(((double)i/(double)imagesWidth)*360.0);
 			//on passe le slider en parametre
@@ -226,7 +226,8 @@ public class HSVColorMediator extends Object implements SliderObserver, Observer
 		tmpHSV[HUE] = (int)(HSV.getH());
 		tmpHSV[SATURATION] = (int)(HSV.getS()*255);
 		tmpHSV[VALUE] = (int)(HSV.getV()*255);
-		
+		//System.out.println("Red:" + red + " Green:" + green + " Blue:" + blue);
+		//System.out.println("RGB2HSV --> Hue:" + tmpHSV[HUE] + " Saturation:" + tmpHSV[SATURATION] + " Value:" + tmpHSV[VALUE]);
 		return tmpHSV;
 	}
 	
@@ -235,15 +236,17 @@ public class HSVColorMediator extends Object implements SliderObserver, Observer
 		int[] rgb = new int[3];
 		
 		double[] tmpHSV = new double[3];
-		tmpHSV[HUE] = ((double)hue/360);
-		tmpHSV[SATURATION] = ((double)saturation/100);
-		tmpHSV[VALUE] = ((double)value/100);
+		tmpHSV[HUE] = ((double)hue);
+		tmpHSV[SATURATION] = ((double)saturation/255)*100;
+		tmpHSV[VALUE] = ((double)value/255)*100;
 		
 		RGB.hsv2rgb(tmpHSV[HUE], tmpHSV[SATURATION], tmpHSV[VALUE]);
 		int[] tmpRGB = new int [3];
-		tmpRGB[RED] = (int)RGB.getR2();
-		tmpRGB[GREEN] = (int)RGB.getG2();
-		tmpRGB[BLUE] = (int)RGB.getB2();
+		tmpRGB[RED] = RGB.getR();
+		tmpRGB[GREEN] = RGB.getG();
+		tmpRGB[BLUE] = RGB.getB();
+        //System.out.println("HSV2RGB --> Hue:" + tmpHSV[HUE] + " Saturation:" + tmpHSV[SATURATION] + " Value:" + tmpHSV[VALUE]);
+        //System.out.println("Red:" + red + " Green:" + green + " Blue:" + blue);
 		return tmpRGB;
 	}
 
