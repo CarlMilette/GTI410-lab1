@@ -25,8 +25,8 @@ import java.util.Stack;
 /**
  * <p>Title: ImageLineFiller</p>
  * <p>Description: Image transformer that inverts the row color</p>
- * <p>Copyright: Copyright (c) 2003 Colin Barré-Brisebois, Éric Paquette</p>
- * <p>Company: ETS - École de Technologie Supérieure</p>
+ * <p>Copyright: Copyright (c) 2003 Colin Barrï¿½-Brisebois, ï¿½ric Paquette</p>
+ * <p>Company: ETS - ï¿½cole de Technologie Supï¿½rieure</p>
  * @author unascribed
  * @version $Revision: 1.12 $
  */
@@ -72,7 +72,8 @@ public class ImageLineFiller extends AbstractTransformer {
 				if (0 <= ptTransformed.x && ptTransformed.x < currentImage.getImageWidth() &&
 				    0 <= ptTransformed.y && ptTransformed.y < currentImage.getImageHeight()) {
 					currentImage.beginPixelUpdate();
-					horizontalLineFill(ptTransformed);
+					//horizontalLineFill(ptTransformed);
+					// TODO Change to boundary or flood fill
 					currentImage.endPixelUpdate();											 	
 					return true;
 				}
