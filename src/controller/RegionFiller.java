@@ -20,9 +20,9 @@ public class RegionFiller extends AbstractTransformer {
     private Pixel fillColor = new Pixel(0xFF00FFFF);
     private Pixel borderColor = new Pixel(0xFFFFFF00);
     private boolean floodFill = true;
-    private int hueThreshold = 1;
-    private int saturationThreshold = 2;
-    private int valueThreshold = 3;
+    private int hueThreshold = 0;
+    private int saturationThreshold = 0;
+    private int valueThreshold = 0;
 
     /**
      * Constructeur par défaut.
@@ -38,6 +38,7 @@ public class RegionFiller extends AbstractTransformer {
 
     protected boolean mouseClicked(MouseEvent e){
         List intersectedObjects = Selector.getDocumentObjectsAtLocation(e.getPoint());
+
         if (!intersectedObjects.isEmpty()) {
             Shape shape = (Shape)intersectedObjects.get(0);
             if (shape instanceof ImageX) {
@@ -57,11 +58,10 @@ public class RegionFiller extends AbstractTransformer {
                         0 <= ptTransformed.y && ptTransformed.y < currentImage.getImageHeight()) {
                     currentImage.beginPixelUpdate();
                     //horizontalLineFill(ptTransformed);
-                    // TODO Change to boundary or flood fill
                     if(isFloodFill()) {
-                        floodFill(ptTransformed.x, ptTransformed.y, currentImage.getPixel(ptTransformed.x, ptTransformed.y), fillColor);
+                        floodFillNR(ptTransformed.x, ptTransformed.y, currentImage.getPixel(ptTransformed.x, ptTransformed.y), fillColor);
                     } else {
-                        boundaryFill();
+                        boundaryFill(ptTransformed.x, ptTransformed.y, borderColor, fillColor);
                     }
                     currentImage.endPixelUpdate();
                     return true;
@@ -164,18 +164,52 @@ public class RegionFiller extends AbstractTransformer {
         System.out.println("new Value Threshold " + i);
     }
 
-    public void floodFill(int x, int y, Pixel coulInterieur, Pixel nouvCoul){
-        System.out.println("Flood Fillin method");
-        if(currentImage.getPixel(x,y).equals(coulInterieur)) {
-            currentImage.setPixel(x, y, nouvCoul);
-            floodFill(x, y + 1, coulInterieur, nouvCoul);
-            floodFill(x, y - 1, coulInterieur, nouvCoul);
-            floodFill(x + 1, y, coulInterieur, nouvCoul);
-            floodFill(x - 1, y, coulInterieur, nouvCoul);
+    public void floodFillNR(int x, int y, Pixel coulInterieur, Pixel nouvCoul){
+        Stack pile = new Stack();
+        Point p = new Point(x,y);
+        if(currentImage.getPixel(p.x,p.y).equals(coulInterieur)){
+            pile.push(p);
+            while(!pile.isEmpty()){
+                Point n = (Point) pile.pop();
+                currentImage.setPixel(n.x,n.y,nouvCoul);
+                if(currentImage.getPixel(n.x,n.y+1).equals(coulInterieur)){
+                    pile.push(new Point(n.x,n.y+1));
+                }
+                if(currentImage.getPixel(n.x,n.y-1).equals(coulInterieur)){
+                    pile.push(new Point(n.x,n.y-1));
+                }
+                if(currentImage.getPixel(n.x+1,n.y).equals(coulInterieur)){
+                    pile.push(new Point(n.x+1,n.y));
+                }
+                if(currentImage.getPixel(n.x-1,n.y).equals(coulInterieur)){
+                    pile.push(new Point(n.x-1,n.y));
+                }
+            }
         }
     }
 
-    public void boundaryFill(){
+    public void boundaryFill(int x, int y, Pixel boundCoul, Pixel nouvCoul){
         System.out.println("Boundary Filling method");
+        Stack pile = new Stack();
+        Point p = new Point(x,y);
+        if(!currentImage.getPixel(p.x,p.y).equals(boundCoul) && !currentImage.getPixel(p.x, p.y+1).equals(nouvCoul)) {
+            pile.push(p);
+            while(!pile.isEmpty()) {
+                Point n = (Point)pile.pop();
+                currentImage.setPixel(n.x, n.y, nouvCoul);
+                if (!currentImage.getPixel(n.x, n.y+1).equals(boundCoul) && !currentImage.getPixel(n.x, n.y+1).equals(nouvCoul)) {
+                    pile.push(new Point(n.x, n.y+1));
+                }
+                if (!currentImage.getPixel(n.x, n.y-1).equals(boundCoul) && !currentImage.getPixel(n.x, n.y-1).equals(nouvCoul)) {
+                    pile.push(new Point(n.x, n.y-1));
+                }
+                if (!currentImage.getPixel(n.x+1, n.y).equals(boundCoul) && !currentImage.getPixel(n.x+1, n.y).equals(nouvCoul)) {
+                    pile.push(new Point(n.x+1, n.y));
+                }
+                if (!currentImage.getPixel(n.x-1, n.y).equals(boundCoul) && !currentImage.getPixel(n.x-1, n.y).equals(nouvCoul)) {
+                    pile.push(new Point(n.x-1, n.y));
+                }
+            }
+        }
     }
 }
