@@ -27,20 +27,21 @@ public class HSVConversion {
 		//S
 		this.s = (this.v - min)/this.v;
 		
-		if(r== max && g == min) {
-			this.h = 5 + (r - b)/(r- g);
-		} else if(r == max && b == min) {
-			this.h = 1 - (r - g)/(r - b);
-		} else if(g == max && b == min) {
-			this.h = 1 + (g - red)/(g - b);
-		} else if(g == max && r == min){
-			this.h = 3 - (g - b)/(g - r);
-		} else if(b == max && r == min) {
-			this.h = 3 + (b - g)/(b - r);
-		} else if(b == max && g == min){
-			this.h = 5 - (b - r)/(b - g);
-		}
-		
+		if((0 < this.h && this.h < 360) && (0 <= this.s && this.s <= 1) && (0 <= this.v && this.v <=1)) {
+            if (r == max && g == min) {
+                this.h = 5 + (r - b) / (r - g);
+            } else if (r == max && b == min) {
+                this.h = 1 - (r - g) / (r - b);
+            } else if (g == max && b == min) {
+                this.h = 1 + (g - red) / (g - b);
+            } else if (g == max && r == min) {
+                this.h = 3 - (g - b) / (g - r);
+            } else if (b == max && r == min) {
+                this.h = 3 + (b - g) / (b - r);
+            } else if (b == max && g == min) {
+                this.h = 5 - (b - r) / (b - g);
+            }
+        }
 		this.h = this.h * 60;
 		if(this.h < 0){
 			this.h += 360;
