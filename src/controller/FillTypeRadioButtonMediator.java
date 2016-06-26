@@ -24,8 +24,8 @@ import javax.swing.JRadioButton;
 /**
  * <p>Title: RadioButtonsMediator</p>
  * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2003 Sébastien Bois, Eric Paquette</p>
- * <p>Company: (ÉTS) - École de Technologie Supérieure</p>
+ * <p>Copyright: Copyright (c) 2003 Sï¿½bastien Bois, Eric Paquette</p>
+ * <p>Company: (ï¿½TS) - ï¿½cole de Technologie Supï¿½rieure</p>
  * @author unascribed
  * @version $Revision: 1.1 $
  */
@@ -46,7 +46,7 @@ public class FillTypeRadioButtonMediator implements ActionListener{
 	/**
 	 * 
 	 */
-	private ImageLineFiller filler;
+	private RegionFiller filler;
 	
 	/**
 	 * 
@@ -54,7 +54,7 @@ public class FillTypeRadioButtonMediator implements ActionListener{
 	 * @param rbFloodFill
 	 * @param filler
 	 */
-	public FillTypeRadioButtonMediator(JRadioButton rbBoundaryFill, JRadioButton rbFloodFill, ImageLineFiller filler) {
+	public FillTypeRadioButtonMediator(JRadioButton rbBoundaryFill, JRadioButton rbFloodFill, RegionFiller filler) {
 		this.rbBoundaryFill = rbBoundaryFill;
 		this.rbFloodFill 	= rbFloodFill;
 		this.filler 		= filler;

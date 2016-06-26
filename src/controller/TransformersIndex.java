@@ -22,14 +22,15 @@ import java.awt.event.KeyEvent;
  * <p>Title: TransformersIndex</p>
  * <p>Description: Class that contains and returns the appropriate transformer when requested by an AbstractTransformer class instance or a child instance.</p>
  * <p>Copyright: Copyright (c) 2003 Mohammed Elghaouat, Eric Paquette</p>
- * <p>Company: (ÉTS) - École de Technologie Supérieure</p>
+ * <p>Company: (ï¿½TS) - ï¿½cole de Technologie Supï¿½rieure</p>
  * @author unascribed
  * @version $Revision: 1.19 $
  */
 public class TransformersIndex extends AbstractTransformer {
 	private Selector theSelector;
 	private RectangularRegionSelector theRectangularSelector;
-	private ImageLineFiller theFiller;
+	//private ImageLineFiller theFiller;
+	private RegionFiller theFiller;
 	private FilteringTransformer theFilter;
 	private Curves theCurves;
 	private Translation theTranslation;
@@ -57,7 +58,8 @@ public class TransformersIndex extends AbstractTransformer {
 		TransformersArray = new AbstractTransformer[idTransformersIndex][MaxEvtIdx+1];
 		theSelector = new Selector();
 		theRectangularSelector = new RectangularRegionSelector();
-		theFiller = new ImageLineFiller();
+		//theFiller = new ImageLineFiller();
+        theFiller = new RegionFiller();
 		theFilter = new FilteringTransformer();
 		theCurves = new Curves();
 		theTranslation = new Translation();
@@ -133,9 +135,12 @@ public class TransformersIndex extends AbstractTransformer {
 	/**
 	 * @return
 	 */
-	public ImageLineFiller getTheFiller() {
+	/*public ImageLineFiller getTheFiller() {
 		return theFiller;
-	}
+	}*/
+    public RegionFiller getTheFiller(){
+        return theFiller;
+    }
 	
 	/**
 	 * 
