@@ -17,6 +17,7 @@ package controller;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import controller.CustomFilter3x3;
 import model.ImageDouble;
 import model.ImageX;
 import model.Shape;
@@ -31,7 +32,7 @@ import model.Shape;
  * @version $Revision: 1.6 $
  */
 public class FilteringTransformer extends AbstractTransformer{
-	Filter filter = new MeanFilter3x3(new PaddingZeroStrategy(), new ImageClampStrategy());
+	CustomFilter3x3 filter = new CustomFilter3x3(new PaddingZeroStrategy(), new ImageClampStrategy());
 	
 	/**
 	 * @param _coordinates
@@ -41,6 +42,8 @@ public class FilteringTransformer extends AbstractTransformer{
 		System.out.println("[" + (_coordinates.getColumn() - 1) + "]["
                                    + (_coordinates.getRow() - 1) + "] = " 
                                    + _value);
+		
+		filter.setCustomFilter(_coordinates, _value);
 	}
 		
 	/**
@@ -79,6 +82,15 @@ public class FilteringTransformer extends AbstractTransformer{
 	 */
 	public void setBorder(String string) {
 		System.out.println(string);
+		if (string.equals("Mirror"))
+		{
+			filter.setPaddingStrategy(new PaddingMirrorStrategy());
+		}
+		else
+		{
+			//all unimplemented padding fall here
+			filter.setPaddingStrategy(new PaddingZeroStrategy());
+		}
 	}
 
 	/**
