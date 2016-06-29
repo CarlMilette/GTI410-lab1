@@ -195,17 +195,17 @@ public class RegionFiller extends AbstractTransformer {
     /**
      * Références https://fr.wikipedia.org/wiki/Algorithme_de_remplissage_par_diffusion
      * */
-    public void boundaryFill(int x, int y, Pixel boundCoul, Pixel nouvCoul){
-        System.out.println("Boundary Filling method");
+    public void boundaryFill(int x, int y, Pixel boundCoul, Pixel nouvCoul) {
+        //System.out.println("Boundary Filling method");
         Stack pile = new Stack();
-        Point p = new Point(x,y);
+        Point p = new Point(x, y);
         /*System.out.println(currentImage.getPixel(p.x,p.y).getRed());
         System.out.println(currentImage.getPixel(p.x,p.y).getGreen());
         System.out.println(currentImage.getPixel(p.x,p.y).getBlue());*/
         RGBConversion converter = new RGBConversion();
-        double currentImageHue = ((double)getHueThreshold());
-        double currentImageSat = ((double)getSaturationThreshold()/255)*100;
-        double currentImageVal = ((double)getValueThreshold()/255)*100;
+        double currentImageHue = ((double) getHueThreshold());
+        double currentImageSat = ((double) getSaturationThreshold() / 255) * 100;
+        double currentImageVal = ((double) getValueThreshold() / 255) * 100;
         converter.hsv2rgb(currentImageHue, currentImageSat, currentImageVal);
         int thresholdR = converter.getR();
         int thresholdG = converter.getG();
@@ -219,25 +219,37 @@ public class RegionFiller extends AbstractTransformer {
         // TODO comparer valeurs des seuils et de la bordure avec valeur du pixel germe. Les seuils ont été convertis en RGB
         // Exemple: if(currentImage.getPixel(p.x,p.y).getRed() < Math.min(thresholdR, bordercolor.getRed()
         //          || currentImage.getPixel(p.x,p.y).getRed() > Math.max(thresholdR, bordercolor.getRed()));
-        if((!currentImage.getPixel(p.x,p.y).equals(boundCoul) && !currentImage.getPixel(p.x, p.y+1).equals(nouvCoul))) {
-            System.out.println(currentImage.getPixel(p.x,p.y));
-            pile.push(p);
-            while(!pile.isEmpty()) {
-                Point n = (Point)pile.pop();
-                currentImage.setPixel(n.x, n.y, nouvCoul);
-                if (!currentImage.getPixel(n.x, n.y+1).equals(boundCoul) && !currentImage.getPixel(n.x, n.y+1).equals(nouvCoul)) {
-                    pile.push(new Point(n.x, n.y+1));
-                }
-                if (!currentImage.getPixel(n.x, n.y-1).equals(boundCoul) && !currentImage.getPixel(n.x, n.y-1).equals(nouvCoul)) {
-                    pile.push(new Point(n.x, n.y-1));
-                }
-                if (!currentImage.getPixel(n.x+1, n.y).equals(boundCoul) && !currentImage.getPixel(n.x+1, n.y).equals(nouvCoul)) {
-                    pile.push(new Point(n.x+1, n.y));
-                }
-                if (!currentImage.getPixel(n.x-1, n.y).equals(boundCoul) && !currentImage.getPixel(n.x-1, n.y).equals(nouvCoul)) {
-                    pile.push(new Point(n.x-1, n.y));
+        try {
+            if ((currentImage.getPixel(p.x, p.y).getRed() <= Math.min(thresholdR, borderColor.getRed()) ||
+                    currentImage.getPixel(p.x, p.y).getRed() >= Math.max(thresholdR, borderColor.getRed())) &&
+                    (currentImage.getPixel(p.x, p.y).getGreen() <= Math.min(thresholdG, borderColor.getGreen()) ||
+                            currentImage.getPixel(p.x, p.y).getGreen() >= Math.min(thresholdG, borderColor.getGreen())) &&
+                    (currentImage.getPixel(p.x, p.y).getBlue() <= Math.min(thresholdB, borderColor.getBlue()) ||
+                            currentImage.getPixel(p.x, p.y).getBlue() >= Math.min(thresholdB, borderColor.getBlue()))) {
+                //System.out.print("Pixel germe different!");
+                if ((!currentImage.getPixel(p.x, p.y).equals(boundCoul) && !currentImage.getPixel(p.x, p.y + 1).equals(nouvCoul))) {
+                    System.out.println(currentImage.getPixel(p.x, p.y));
+                    pile.push(p);
+                    while (!pile.isEmpty()) {
+                        Point n = (Point) pile.pop();
+                        currentImage.setPixel(n.x, n.y, nouvCoul);
+                        if (!currentImage.getPixel(n.x, n.y + 1).equals(boundCoul) && !currentImage.getPixel(n.x, n.y + 1).equals(nouvCoul)) {
+                            pile.push(new Point(n.x, n.y + 1));
+                        }
+                        if (!currentImage.getPixel(n.x, n.y - 1).equals(boundCoul) && !currentImage.getPixel(n.x, n.y - 1).equals(nouvCoul)) {
+                            pile.push(new Point(n.x, n.y - 1));
+                        }
+                        if (!currentImage.getPixel(n.x + 1, n.y).equals(boundCoul) && !currentImage.getPixel(n.x + 1, n.y).equals(nouvCoul)) {
+                            pile.push(new Point(n.x + 1, n.y));
+                        }
+                        if (!currentImage.getPixel(n.x - 1, n.y).equals(boundCoul) && !currentImage.getPixel(n.x - 1, n.y).equals(nouvCoul)) {
+                            pile.push(new Point(n.x - 1, n.y));
+                        }
+                    }
                 }
             }
+        } catch(Exception ex) {
+            System.err.println("Boundary fill error");
         }
     }
 }
