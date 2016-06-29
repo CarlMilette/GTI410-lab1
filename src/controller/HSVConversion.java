@@ -25,7 +25,14 @@ public class HSVConversion {
 		this.v = max;
 		
 		//S
-		this.s = (this.v - min)/this.v;
+		if(this.v == 0)
+		{
+			this.s = 0;
+		}
+		else
+		{
+			this.s = (this.v - min)/this.v;
+		}
 		
 		if((0 < this.h && this.h < 360) && (0 <= this.s && this.s <= 1) && (0 <= this.v && this.v <=1)) {
             if (r == max && g == min) {
