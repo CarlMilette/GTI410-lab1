@@ -48,8 +48,7 @@ public class RGBConversion {
 		double s = Math.max(0, Math.min(100, saturation));
 		double v = Math.max(0, Math.min(100, value));
 
-		// We accept saturation and value arguments from 0 to 100 because that's
-		// how Photoshop represents those values. Internally, however, the
+		// We accept saturation and value arguments from 0 to 100. Internally, however, the
 		// saturation and value are calculated from a range of 0 to 1. We make
 		// That conversion here.
 		s /= 100;
