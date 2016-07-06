@@ -97,6 +97,7 @@ public class Scaling extends AbstractTransformer {
 		System.out.println("Scaling : Processing command ...");
 		Document doc = Application.getInstance().getActiveDocument();
 		List selectedObjects = doc.getSelectedObjects();
+		
 		Command c = new ScaleCommand(xScale,yScale,anchor,selectedObjects);
 		Caretaker.getInstance().execute(c);
 	}
