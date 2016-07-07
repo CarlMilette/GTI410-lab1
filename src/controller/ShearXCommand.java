@@ -14,7 +14,11 @@
 */
 package controller;
 
+import java.awt.geom.AffineTransform;
+import java.util.Iterator;
 import java.util.List;
+
+import model.Shape;
 
 /**
  * <p>Title: ShearXCommand</p>
@@ -44,7 +48,18 @@ public class ShearXCommand extends AnchoredTransformationCommand {
 		System.out.println("command: shearing on x-axis by " + angleDegrees +
 				           " degrees anchored on " + getAnchor());
 		
-		// voluntarily undefined
+		Iterator iter = objects.iterator();
+		Shape shape;
+		while(iter.hasNext()){
+			shape = (Shape)iter.next();
+			mt.addMememto(shape);
+			AffineTransform t = shape.getAffineTransform();
+			t.translate(getAnchorPoint(objects).getX(), getAnchorPoint(objects).getY());
+			//by putting the tan of the angle value, we restrict the shearing from 90 to -90
+			t.shear(Math.tan(Math.toRadians(angleDegrees)), 0);
+			t.translate(-getAnchorPoint(objects).getX(), -getAnchorPoint(objects).getY());
+			shape.setAffineTransform(t);
+		}
 	}
 
 	/* (non-Javadoc)
