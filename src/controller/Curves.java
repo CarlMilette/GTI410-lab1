@@ -116,37 +116,43 @@ public class Curves extends AbstractTransformer implements DocObserver {
 					int controlPointIndex = curve.getShapes().indexOf(s);
 					System.out.println("Try to apply G1 continuity on control point [" + controlPointIndex + "]");
 
-					//code need to be adapted
+					/*les points de contrôle pour la jonction doivent être déplacés de façon que les deux tangentes
+					soient alignées (continuité G1).
+					*/
+					//Define the position of the points
+					ControlPoint courantControlPoint = (ControlPoint) s;
+					ControlPoint suivantControlPoint= (ControlPoint) curve.getShapes().get(controlPointIndex + 1);
+					ControlPoint precedentControlPoint = (ControlPoint) curve.getShapes().get(controlPointIndex - 1);
+					
+					//Definir le point de control precedent
+					double dx = Math.abs((precedentControlPoint.getCenter().x - courantControlPoint.getCenter().x));
+					double dy = Math.abs((precedentControlPoint.getCenter().y - courantControlPoint.getCenter().y));
+					double pPrecedentCourant= Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
-					ControlPoint previousControlPoint = (ControlPoint) curve.getShapes().get(controlPointIndex - 1);
-					ControlPoint currentControlPoint = (ControlPoint) s;
-					ControlPoint nextControlPoint= (ControlPoint) curve.getShapes().get(controlPointIndex + 1);
+					//Definir les vecteur unitaires
+					double VectorUnitaireX = dx / pPrecedentCourant;
+					double VectorUnitaireY = dy / pPrecedentCourant;
 
+					//Definir le point de control courant
+					float c1 = Math.abs((courantControlPoint.getCenter().x - suivantControlPoint.getCenter().x));
+					float c2 = Math.abs((courantControlPoint.getCenter().y - suivantControlPoint.getCenter().y));
+					double pCourantSuivant= Math.sqrt(Math.pow(c1, 2) + Math.pow(c2, 2));
 
+					//Definir les directions des vecteurs
+					double VecteurDirectionX = VectorUnitaireX * pCourantSuivant * -1.F;
+					double VecteurDirectionY = VectorUnitaireY * pCourantSuivant;
 
-					float a = Math.abs((currentControlPoint.getCenter().x - nextControlPoint.getCenter().x));
-					float b = Math.abs((currentControlPoint.getCenter().y - nextControlPoint.getCenter().y));
-					double cCurrentNext = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+					//Definir les nouvel prochaine point
+					double NouvelProchainetPointX = courantControlPoint.getCenter().x + (VecteurDirectionX * -1.F);
+					double NouvelProchainetPointY = courantControlPoint.getCenter().y + VecteurDirectionY;
 
-					double deltaX = Math.abs((previousControlPoint.getCenter().x - currentControlPoint.getCenter().x));
-					double deltaY = Math.abs((previousControlPoint.getCenter().y - currentControlPoint.getCenter().y));
-					double cPreviousCurrent= Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-
-					double xUnitVector = deltaX / cPreviousCurrent;
-					double yUnitVector = deltaY / cPreviousCurrent;
-
-					double xDirectionVector = xUnitVector * cCurrentNext * -1.F;
-					double yDirectionVector = yUnitVector * cCurrentNext;
-
-					double xNewNextPoint = currentControlPoint.getCenter().x + (xDirectionVector * -1.F);
-					double yNewNextPoint = currentControlPoint.getCenter().y + yDirectionVector;
-
-					nextControlPoint.getCenter().x = (int) Math.round(xNewNextPoint);
-					nextControlPoint.getCenter().y = (int) Math.round(yNewNextPoint);
-					nextControlPoint.notifyObservers();
+					//Assigner le suivant point de control
+					suivantControlPoint.getCenter().x = (int) Math.round(NouvelProchainetPointX);
+					suivantControlPoint.getCenter().y = (int) Math.round(NouvelProchainetPointY);
+					suivantControlPoint.notifyObservers();
 				}
 				else{
-					System.out.println("The point is not valid.");
+					System.out.println("select another point: error in this point.");
 				}
 			}
 			
@@ -163,32 +169,34 @@ public class Curves extends AbstractTransformer implements DocObserver {
 					int controlPointIndex = curve.getShapes().indexOf(s);
 					System.out.println("Try to apply C1 continuity on control point [" + controlPointIndex + "]");
 
-					//Code adapted
+					/*les points de contrôle pour cette jonction doivent être déplacés de façon que les deux tangentes
+					soient égales (continuité C1)*/
+					//Define the position of the points
+					ControlPoint courantControlPoint = (ControlPoint) s;
+					ControlPoint suivantControlPoint= (ControlPoint) curve.getShapes().get(controlPointIndex + 1);
+					ControlPoint precedentControlPoint = (ControlPoint) curve.getShapes().get(controlPointIndex - 1);
 
-					ControlPoint previousControlPoint = (ControlPoint) curve.getShapes().get(controlPointIndex - 1);
-					ControlPoint currentControlPoint = (ControlPoint) s;
-					ControlPoint nextControlPoint= (ControlPoint) curve.getShapes().get(controlPointIndex + 1);
+					//Definir le point de control precedent
+					double dx = Math.abs((precedentControlPoint.getCenter().x - courantControlPoint.getCenter().x));
+					double dy = Math.abs((precedentControlPoint.getCenter().y - courantControlPoint.getCenter().y));
+					double pPrecedentCourant = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
+					//Definir les vecteur unitaires
+					double VectorUnitaireX = dx / pPrecedentCourant;
+					double VectorUnitaireY = dy / pPrecedentCourant;
 
-					float a = Math.abs((currentControlPoint.getCenter().x - nextControlPoint.getCenter().x));
-					float b = Math.abs((currentControlPoint.getCenter().y - nextControlPoint.getCenter().y));
+					//Definir les directions des vecteurs
+					double VecteurDirectionX = VectorUnitaireX * pPrecedentCourant * -1.F;
+					double VecteurDirectionY = VectorUnitaireY * pPrecedentCourant;
 
-					double deltaX = Math.abs((previousControlPoint.getCenter().x - currentControlPoint.getCenter().x));
-					double deltaY = Math.abs((previousControlPoint.getCenter().y - currentControlPoint.getCenter().y));
-					double cPreviousCurrent= Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+					//Definir les nouvel prochaine point
+					double NouvelProchainetPointX = courantControlPoint.getCenter().x + (VecteurDirectionX * -1.F);
+					double NouvelProchainetPointY = courantControlPoint.getCenter().y + VecteurDirectionY;
 
-					double xUnitVector = deltaX / cPreviousCurrent;
-					double yUnitVector = deltaY / cPreviousCurrent;
-
-					double xDirectionVector = xUnitVector * cPreviousCurrent * -1.F;
-					double yDirectionVector = yUnitVector * cPreviousCurrent;
-
-					double xNewNextPoint = currentControlPoint.getCenter().x + (xDirectionVector * -1.F);
-					double yNewNextPoint = currentControlPoint.getCenter().y + yDirectionVector;
-
-					nextControlPoint.getCenter().x = (int) Math.round(xNewNextPoint);
-					nextControlPoint.getCenter().y = (int) Math.round(yNewNextPoint);
-					nextControlPoint.notifyObservers();
+					//Assigner le suivant point de control
+					suivantControlPoint.getCenter().x = (int) Math.round(NouvelProchainetPointX);
+					suivantControlPoint.getCenter().y = (int) Math.round(NouvelProchainetPointY);
+					suivantControlPoint.notifyObservers();
 				}
 			}
 			
