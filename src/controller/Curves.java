@@ -32,8 +32,8 @@ import model.Shape;
 /**
  * <p>Title: Curves</p>
  * <p>Description: (AbstractTransformer)</p>
- * <p>Copyright: Copyright (c) 2004 Sébastien Bois, Eric Paquette</p>
- * <p>Company: (ÉTS) - École de Technologie Supérieure</p>
+ * <p>Copyright: Copyright (c) 2004 Sï¿½bastien Bois, Eric Paquette</p>
+ * <p>Company: (ï¿½TS) - ï¿½cole de Technologie Supï¿½rieure</p>
  * @author unascribed
  * @version $Revision: 1.9 $
  */
@@ -119,6 +119,38 @@ public class Curves extends AbstractTransformer implements DocObserver {
 				if (curve.getShapes().contains(s)){
 					int controlPointIndex = curve.getShapes().indexOf(s);
 					System.out.println("Try to apply G1 continuity on control point [" + controlPointIndex + "]");
+
+					//code need to be adapted
+
+					ControlPoint previousControlPoint = (ControlPoint) curve.getShapes().get(controlPointIndex - 1);
+					ControlPoint currentControlPoint = (ControlPoint) s;
+					ControlPoint nextControlPoint= (ControlPoint) curve.getShapes().get(controlPointIndex + 1);
+
+					//float delta = (previousControlPoint.getCenter().x - currentControlPoint.getCenter().x) / (previousControlPoint.getCenter().y - currentControlPoint.getCenter().y);
+
+					float a = Math.abs((currentControlPoint.getCenter().x - nextControlPoint.getCenter().x));
+					float b = Math.abs((currentControlPoint.getCenter().y - nextControlPoint.getCenter().y));
+					double cCurrentNext = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+
+					double deltaX = Math.abs((previousControlPoint.getCenter().x - currentControlPoint.getCenter().x));
+					double deltaY = Math.abs((previousControlPoint.getCenter().y - currentControlPoint.getCenter().y));
+					double cPreviousCurrent= Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+					double xUnitVector = deltaX / cPreviousCurrent;
+					double yUnitVector = deltaY / cPreviousCurrent;
+
+					double xDirectionVector = xUnitVector * cCurrentNext * -1.F;
+					double yDirectionVector = yUnitVector * cCurrentNext;
+
+					double xNewNextPoint = currentControlPoint.getCenter().x + (xDirectionVector * -1.F);
+					double yNewNextPoint = currentControlPoint.getCenter().y + yDirectionVector;
+
+					nextControlPoint.getCenter().x = (int) Math.round(xNewNextPoint);
+					nextControlPoint.getCenter().y = (int) Math.round(yNewNextPoint);
+					nextControlPoint.notifyObservers();
+				}
+				else{
+					System.out.println("The point is not valid.");
 				}
 			}
 			
@@ -134,6 +166,34 @@ public class Curves extends AbstractTransformer implements DocObserver {
 				if (curve.getShapes().contains(s)){
 					int controlPointIndex = curve.getShapes().indexOf(s);
 					System.out.println("Try to apply C1 continuity on control point [" + controlPointIndex + "]");
+					//Code adapted
+
+					ControlPoint previousControlPoint = (ControlPoint) curve.getShapes().get(controlPointIndex - 1);
+					ControlPoint currentControlPoint = (ControlPoint) s;
+					ControlPoint nextControlPoint= (ControlPoint) curve.getShapes().get(controlPointIndex + 1);
+
+					//float delta = (previousControlPoint.getCenter().x - currentControlPoint.getCenter().x) / (previousControlPoint.getCenter().y - currentControlPoint.getCenter().y);
+
+					float a = Math.abs((currentControlPoint.getCenter().x - nextControlPoint.getCenter().x));
+					float b = Math.abs((currentControlPoint.getCenter().y - nextControlPoint.getCenter().y));
+					//double cCurrentNext = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+
+					double deltaX = Math.abs((previousControlPoint.getCenter().x - currentControlPoint.getCenter().x));
+					double deltaY = Math.abs((previousControlPoint.getCenter().y - currentControlPoint.getCenter().y));
+					double cPreviousCurrent= Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+					double xUnitVector = deltaX / cPreviousCurrent;
+					double yUnitVector = deltaY / cPreviousCurrent;
+
+					double xDirectionVector = xUnitVector * cPreviousCurrent * -1.F;
+					double yDirectionVector = yUnitVector * cPreviousCurrent;
+
+					double xNewNextPoint = currentControlPoint.getCenter().x + (xDirectionVector * -1.F);
+					double yNewNextPoint = currentControlPoint.getCenter().y + yDirectionVector;
+
+					nextControlPoint.getCenter().x = (int) Math.round(xNewNextPoint);
+					nextControlPoint.getCenter().y = (int) Math.round(yNewNextPoint);
+					nextControlPoint.notifyObservers();
 				}
 			}
 			
