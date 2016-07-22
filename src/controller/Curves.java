@@ -17,17 +17,9 @@ package controller;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import model.*;
 import view.Application;
 import view.CurvesPanel;
-
-import model.BezierCurveType;
-import model.ControlPoint;
-import model.Curve;
-import model.CurvesModel;
-import model.DocObserver;
-import model.Document;
-import model.PolylineCurveType;
-import model.Shape;
 
 /**
  * <p>Title: Curves</p>
@@ -55,7 +47,6 @@ public class Curves extends AbstractTransformer implements DocObserver {
 		firstPoint = true;
 		Document doc = Application.getInstance().getActiveDocument();
 		List selectedObjects = doc.getSelectedObjects();
-		boolean selectionIsACurve = false; 
 		if (selectedObjects.size() > 0){
 			Shape s = (Shape)selectedObjects.get(0);
 			if (s instanceof Curve){
@@ -101,10 +92,15 @@ public class Curves extends AbstractTransformer implements DocObserver {
 	 * @param string
 	 */
 	public void setCurveType(String string) {
+		//Activer la selection du type de courbe
 		if (string == CurvesModel.BEZIER) {
 			curve.setCurveType(new BezierCurveType(CurvesModel.BEZIER));
 		} else if (string == CurvesModel.LINEAR) {
 			curve.setCurveType(new PolylineCurveType(CurvesModel.LINEAR));
+		} else if (string == CurvesModel.BSPLINE) {
+			curve.setCurveType(new BSplineCurveType(CurvesModel.BSPLINE));
+		} else if (string == CurvesModel.HERMITE) {
+			curve.setCurveType(new HermiteCurveType(CurvesModel.HERMITE));
 		} else {
 			System.out.println("Curve type [" + string + "] is unknown.");
 		}
@@ -126,7 +122,7 @@ public class Curves extends AbstractTransformer implements DocObserver {
 					ControlPoint currentControlPoint = (ControlPoint) s;
 					ControlPoint nextControlPoint= (ControlPoint) curve.getShapes().get(controlPointIndex + 1);
 
-					//float delta = (previousControlPoint.getCenter().x - currentControlPoint.getCenter().x) / (previousControlPoint.getCenter().y - currentControlPoint.getCenter().y);
+
 
 					float a = Math.abs((currentControlPoint.getCenter().x - nextControlPoint.getCenter().x));
 					float b = Math.abs((currentControlPoint.getCenter().y - nextControlPoint.getCenter().y));
@@ -166,17 +162,16 @@ public class Curves extends AbstractTransformer implements DocObserver {
 				if (curve.getShapes().contains(s)){
 					int controlPointIndex = curve.getShapes().indexOf(s);
 					System.out.println("Try to apply C1 continuity on control point [" + controlPointIndex + "]");
+
 					//Code adapted
 
 					ControlPoint previousControlPoint = (ControlPoint) curve.getShapes().get(controlPointIndex - 1);
 					ControlPoint currentControlPoint = (ControlPoint) s;
 					ControlPoint nextControlPoint= (ControlPoint) curve.getShapes().get(controlPointIndex + 1);
 
-					//float delta = (previousControlPoint.getCenter().x - currentControlPoint.getCenter().x) / (previousControlPoint.getCenter().y - currentControlPoint.getCenter().y);
 
 					float a = Math.abs((currentControlPoint.getCenter().x - nextControlPoint.getCenter().x));
 					float b = Math.abs((currentControlPoint.getCenter().y - nextControlPoint.getCenter().y));
-					//double cCurrentNext = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
 
 					double deltaX = Math.abs((previousControlPoint.getCenter().x - currentControlPoint.getCenter().x));
 					double deltaY = Math.abs((previousControlPoint.getCenter().y - currentControlPoint.getCenter().y));
