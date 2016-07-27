@@ -71,6 +71,9 @@ public class BSplineCurveType extends CurveType {
 			((ControlPoint)controlPoints.get(3)).getCenter());
 		Point p = Matrix.eval(tVector, matrix, gVector);
 		//4 points et On partage les points de contrôle entre les segments.
+		//http://forum.unity3d.com/threads/b-splines.11951/ consulté le 16 juillet 2016
+		//https://github.com/deric/curve-fit-demo/blob/master/src/main/java/org/clueminer/
+		// curve/fit/splines/BSpline.java consulté le 17 juillet 2016.
 		p.x = p.x / 6;
 		p.y = p.y / 6;
 		return p;

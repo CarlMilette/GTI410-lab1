@@ -57,35 +57,30 @@ public class HermiteCurveType extends CurveType {
 		int controlPointIndex = segmentNumber * 3 + controlPointNumber;
 		return (ControlPoint)controlPoints.get(controlPointIndex);
 	}
-
 	/* (non-Javadoc)
 	 * @see model.CurveType#evalCurveAt(java.util.List, double)
 	 */
 	public Point evalCurveAt(List controlPoints, double t) {
 		List tVector = Matrix.buildRowVector4(t*t*t, t*t, t, 1);
 		//Defined the tangents to extremities of the Hermite curve
-
+		//http://pulsar.webshaker.net/2012/08/29/les-courbes-de-bezier-1/ . Consulté le 23 juillet 2016.
 		//tang1 = tangent to extremities 1
 		int tang1X = ((ControlPoint)controlPoints.get(1)).getCenter().x - ((ControlPoint)controlPoints.get(0)).getCenter().x;
 		int tang1Y = ((ControlPoint)controlPoints.get(1)).getCenter().y - ((ControlPoint)controlPoints.get(0)).getCenter().y;
 		Point tang1 = new Point(tang1X, tang1Y);
-
 		//tang2 = tangent to extremities 2
 		int tang2X = ((ControlPoint)controlPoints.get(3)).getCenter().x - ((ControlPoint)controlPoints.get(2)).getCenter().x;
 		int tang2Y = ((ControlPoint)controlPoints.get(3)).getCenter().y - ((ControlPoint)controlPoints.get(2)).getCenter().y;
 		Point tang2 = new Point(tang2X, tang2Y);
-
-
 /*(ControlPoint)controlPoints.get(1)) and (ControlPoint)controlPoints.get(2)).getCenter() take off
 * and we added tang1 and tang2 to adapt the Bezier code to the Hermite code
 * */
 		List gVector = Matrix.buildColumnVector4(((ControlPoint)controlPoints.get(0)).getCenter(),
 				                                ((ControlPoint)controlPoints.get(3)).getCenter(), tang1, tang2);
-
 		Point p = Matrix.eval(tVector, matrix, gVector);
 		return p;
 	}
-//Matrix Hermite modified
+//Matrix Hermite defined
 	private List HERMITEMatrix =
 		Matrix.buildMatrix4( 2,-2, 1, 1,
 				            -3, 3,-2,-1,
